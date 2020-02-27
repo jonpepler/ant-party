@@ -1,0 +1,54 @@
+{
+  "name": "ant-party-server",
+  "version": "0.0.0",
+  "description": "Backend for Ant Party",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test mocha --recursive --require @babel/register --require regenerator-runtime tests --exit",
+    "start": "node index.js",
+    "dev": "nodemon index.js --ignore './client/'",
+    "lint": "eslint . --fix",
+    "commit": "npx git-cz"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "author": "jonpepler",
+  "license": "GNU GPLv3",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "connect-history-api-fallback": "^1.6.0",
+    "cors": "^2.8.5",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "express": "^4.17.1",
+    "rooty": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/register": "^7.6.2",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "mocha": "^6.2.2",
+    "nodemon": "^2.0.2",
+    "pre-commit": "^1.2.2",
+    "regenerator-runtime": "^0.13.3"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": [
+      [
+        "@babel/plugin-proposal-class-properties"
+      ]
+    ]
+  }
+}
