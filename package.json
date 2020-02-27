@@ -14,7 +14,7 @@
     "lint"
   ],
   "author": "jonpepler",
-  "license": "GNU GPLv3",
+  "license": "GPL-3.0-only",
   "dependencies": {
     "body-parser": "^1.19.0",
     "connect-history-api-fallback": "^1.6.0",
