@@ -1,0 +1,59 @@
+{
+	"info": {
+		"_postman_id": "d086bc4f-3f25-4f69-b238-580c1aedeb8c",
+		"name": "Ant Party Server",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Run Function",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/v1/run?func=(() => {const a = 2; const b = 3; return a*b;})()",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"run"
+					],
+					"query": [
+						{
+							"key": "func",
+							"value": "(() => {const a = 2; const b = 3; return a*b;})()"
+						}
+					]
+				},
+				"description": "POST /run { func: myFunc }"
+			},
+			"response": []
+		},
+		{
+			"name": "Test Function",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/api/v1/test",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"test"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
