@@ -16,13 +16,11 @@ class Func {
     try{
       this.code = isolate.compileScriptSync(untrustedCode);
     }
-    catch (e) {
-      throw e
-    }
+    catch (e) { throw e }
   }
 
   async run () {
-    return this.code.run(this.context).catch(err => console.error(err));
+    return this.code.run(this.context)
   }
 }
 
