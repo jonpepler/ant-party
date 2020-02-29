@@ -16,7 +16,8 @@ class FuncController {
     }
     const code = req.query.func
     try {
-      const func = new Func(code)
+      const antData = { testVar: 100 }
+      const func = new Func(code, antData)
       const result = await func.run()
       res.send({ result })
     } catch (e) {
