@@ -10,7 +10,7 @@ const localPort = (process.env.NODE_ENV === 'test' ? 3456 : 8000)
 const { app } = new App(
   [
     new TestController(),
-    new FuncController(),
+    new FuncController()
   ]
 )
 

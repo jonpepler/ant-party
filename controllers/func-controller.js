@@ -3,7 +3,6 @@ const Func = require('^models/Func')
 
 class FuncController {
   constructor () {
-    this.path = 
     this.router = Router()
 
     this.router.post('/run', this.run)
@@ -19,9 +18,8 @@ class FuncController {
     try {
       const func = new Func(code)
       const result = await func.run()
-      res.send({result})
-    }
-    catch (e) {
+      res.send({ result })
+    } catch (e) {
       const error = new Error(e)
       error.httpStatusCode = 400
       next(error)
