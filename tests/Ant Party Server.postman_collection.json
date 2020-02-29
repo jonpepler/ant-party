@@ -11,7 +11,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/api/v1/run?func=(() => {const a = 2; const b = 3; return a*b;})()",
+					"raw": "http://localhost:8000/api/v1/run?func=(\n  () => {\n    const a = 2; const b = 3;\n    return {sum: a*b*ant['testVar']}\n  }\n)()",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -25,7 +25,7 @@
 					"query": [
 						{
 							"key": "func",
-							"value": "(() => {const a = 2; const b = 3; return a*b;})()"
+							"value": "(\n  () => {\n    const a = 2; const b = 3;\n    return {sum: a*b*ant['testVar']}\n  }\n)()"
 						}
 					]
 				},
