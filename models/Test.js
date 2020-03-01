@@ -1,6 +1,8 @@
+const { version } = require('../package.json')
+
 class Test {
   async hello () {
-    return 'Hello, world!'
+    return `Ant Party Server ${version}`
   }
 }
 
