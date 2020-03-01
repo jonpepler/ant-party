@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.1](https://github.com/jonpepler/ant-party/compare/v0.0.0...v0.0.1) (2020-03-01)
+
+
+### Features
+
+* 🎸 Return the version number on the test endpoint ([e3f4de4](https://github.com/jonpepler/ant-party/commit/e3f4de4ead66e709d06a876a3e3def684e1def26))
+
+
+### Bug Fixes
+
+* 🐛 Expose custom function errors to client better ([8e13881](https://github.com/jonpepler/ant-party/commit/8e1388135028a05d0ab6cfa981e827739723e217))
+
 ## 0.0.0 (2020-02-28)
 
 
