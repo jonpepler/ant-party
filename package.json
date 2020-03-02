@@ -8,7 +8,8 @@
     "start": "node index.js",
     "dev": "nodemon index.js --ignore './client/'",
     "lint": "eslint . --fix",
-    "commit": "npx git-cz"
+    "commit": "npx git-cz",
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "pre-commit": [
     "lint"
