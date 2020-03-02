@@ -9,6 +9,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Build Client
+      run: |
+        cd client
+        npm ci
+        npm run build
     - name: Deploy to Heroku
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
