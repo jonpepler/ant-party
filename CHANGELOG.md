@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2](https://github.com/jonpepler/ant-party/compare/v0.0.1...v0.0.2) (2020-03-02)
+
+
+### Features
+
+* 🎸 Add a simple create-react-app web frontend ([711d8e1](https://github.com/jonpepler/ant-party/commit/711d8e12d8a62afdbe74032a5ae30fe8557e12dc))
+
 ### [0.0.1](https://github.com/jonpepler/ant-party/compare/v0.0.0...v0.0.1) (2020-03-01)
 
 
