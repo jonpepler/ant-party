@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const { resolve } = require('path')
 const history = require('connect-history-api-fallback')
 const cors = require('cors')
-const publicPath = resolve(__dirname, 'client/dist')
+const publicPath = resolve(__dirname, 'client/build')
 const staticConf = { maxAge: '1y', etag: false }
 
 class App {
