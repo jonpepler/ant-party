@@ -19,10 +19,8 @@ class App {
   // These settings need to come from the environment
     const whitelist = [
       'http://localhost', // Local
-      'http://localhost:3456', // Test
       'http://localhost:8000', // Backend
-      'http://localhost:8080', // Client (standard)
-      'http://localhost:8081', // Client (end2end tests)
+      'http://localhost:3000', // Client (standard)
       'https://ant-party.herokuapp.com', // Demo
       'http://ant-party.herokuapp.com' // Demo
     ]
