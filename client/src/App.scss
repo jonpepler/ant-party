@@ -58,6 +58,11 @@ button {
   cursor: pointer;
   font-size: 1em;
   padding: 15px 25px;
+
+  &:hover {
+    background-color: rgba($link-colour, .2);
+    transition: background-color 200ms linear;
+  }
 }
 
 code {
