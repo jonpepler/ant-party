@@ -2,6 +2,11 @@ const rooty = require('rooty')
 
 rooty()
 
+// Load envvars from .env
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const App = require('./app')
 const TestController = require('./controllers/test-controller')
 const FuncController = require('./controllers/func-controller')
