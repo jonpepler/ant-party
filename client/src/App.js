@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
+import '@csstools/normalize.css';
+import './App.scss'
 
-import APITest from './APITest.js';
+import Game from './Game.js'
+import APITest from './APITest.js'
 
-function App() {
+function App () {
+  const [gameStarted, startGame] = useState(false)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <APITest/>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className='app'>
+      <main className='main-content'>
+        {gameStarted ?
+          (<Game/>)
+          : 
+          (
+            <React.Fragment>
+              <header className='app-header'>
+                <h1>Ant Party</h1>
+              </header>
+              <nav>
+                <button onClick={startGame}>
+                  Start a Game
+                </button>
+              </nav>
+            </React.Fragment>
+          )}
+          
+      </main>
+      <footer>
+        <APITest />
+      </footer>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

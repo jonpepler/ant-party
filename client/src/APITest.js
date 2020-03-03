@@ -1,19 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react'
 
-export default class APITEST extends React.Component {
-  constructor() {
-    super();
-    this.state = { apiResponse: "" };
-    this.callAPI();
-  }
+const APITest = () => {
+  const [apiResponse, setAPIResponse] = useState('')
 
-  callAPI() {
+  const callAPI = () => {
     fetch(`${process.env.REACT_APP_SERVER_HOST}/api/v1/test`)
       .then(res => res.text())
-      .then(res => this.setState({ apiResponse: res }));
+      .then(res => setAPIResponse(res))
   }
+  if (apiResponse === '') callAPI()
 
-  render () {
-    return (<p>{this.state.apiResponse}</p>)
-  }
+  return (<p>{apiResponse}</p>)
 }
+
+export default APITest;

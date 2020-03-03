@@ -1,0 +1,15 @@
+$background-colour: #282c34;
+$secondary-colour: #4575b1;
+$link-colour: #61dafb;
+$text-colour: #fff;
+$secondary-highlight-colour: #191a1d;
+
+$error-colour: #d85757;
+$secondary-error-colour: #f54444;
+
+$footer-height: 16px;
+
+@mixin text {
+  color: $text-colour;
+  font-size: 1.5em;
+}
