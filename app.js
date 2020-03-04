@@ -6,6 +6,11 @@ const cors = require('cors')
 const publicPath = resolve(__dirname, 'client/build')
 const staticConf = { maxAge: '1y', etag: false }
 
+const session = require('express-session')
+const redis = require('redis')
+const redisClient = redis.createClient(process.env.REDIS_URL)
+const RedisStore = require('connect-redis')(session)
+
 class App {
   constructor (controllers) {
     this.app = express()
@@ -37,6 +42,24 @@ class App {
   }
 
   initializeMiddlewares () {
+    redisClient.on('error', (err) => {
+      console.log('Redis error: ', err)
+    })
+
+    // Start a session; we use Redis for the session store.
+    // "secret" will be used to create the session ID hash (the cookie id and the redis key value)
+    // "name" will show up as your cookie name in the browser
+    // "cookie" is provided by default; you can add it to add additional personalized options
+    // The "store" ttl is the expiration time for each Redis session ID, in seconds
+    this.app.use(session({
+      secret: process.env.SECRET,
+      name: '_redis',
+      resave: false,
+      saveUninitialized: true,
+      cookie: { secure: false }, // Note that the cookie-parser module is no longer needed
+      store: new RedisStore({ client: redisClient, ttl: 86400 })
+    }))
+
     this.app.use(bodyParser.json())
     this.app.use((req, res, next) => {
       req.params.id = req.params.id ? Number(req.params.id) : undefined
