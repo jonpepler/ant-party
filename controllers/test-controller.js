@@ -11,10 +11,10 @@ class TestController {
   }
 
   initializeRoutes () {
-    this.router.get(this.path, this.getPeople)
+    this.router.get(this.path, this.getAbout)
   }
 
-  async getPeople (req, res) {
+  async getAbout (req, res) {
     const test = await Test.hello()
     res.send(test)
   }
