@@ -6,10 +6,7 @@ const cors = require('cors')
 const publicPath = resolve(__dirname, 'client/build')
 const staticConf = { maxAge: '1y', etag: false }
 
-const session = require('express-session')
-const redis = require('redis')
-const redisClient = redis.createClient(process.env.REDIS_URL)
-const RedisStore = require('connect-redis')(session)
+const { session, redis, RedisStore } = require('./redis')
 
 class App {
   constructor (controllers) {
@@ -42,7 +39,7 @@ class App {
   }
 
   initializeMiddlewares () {
-    redisClient.on('error', (err) => {
+    redis.on('error', (err) => {
       console.log('Redis error: ', err)
     })
 
@@ -57,7 +54,7 @@ class App {
       resave: false,
       saveUninitialized: true,
       cookie: { secure: process.env.NODE_ENV === 'production' },
-      store: new RedisStore({ client: redisClient, ttl: 86400 })
+      store: new RedisStore({ client: redis, ttl: 86400 })
     }))
 
     this.app.use(bodyParser.json())

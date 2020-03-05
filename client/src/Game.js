@@ -7,21 +7,21 @@ export default class Game extends React.Component {
   constructor () {
     super()
 
-    this.getRoomCode = this.getRoomCode.bind(this)
+    this.getGamecode = this.getGamecode.bind(this)
 
     this.state = {
-      roomCode: 'loading...',
+      gamecode: 'loading...',
       started: false
     }
 
-    this.getRoomCode()
+    this.getGamecode()
   }
 
-  getRoomCode () {
-    axios.get('/room/create')
-      .then(data => {
-        const roomCode = data.roomCode
-        this.setState({ roomCode })
+  getGamecode () {
+    axios.post('/api/v1/game/create')
+      .then(response => {
+        const { gamecode } = response.data
+        this.setState({ gamecode })
       })
       .catch(error => {
         this.setState({ error: error.message })
@@ -38,7 +38,7 @@ export default class Game extends React.Component {
               <div>
                 <p className="inline">When prompted, enter room code </p>
                 <div className="room-code room-code--inline">
-                  {this.state.roomCode}
+                  {this.state.gamecode}
                 </div>
               </div>
               {this.state.error ? (<ErrorMessage message={this.state.error}/>) : undefined}
