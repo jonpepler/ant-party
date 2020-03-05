@@ -56,7 +56,7 @@ class App {
       name: '_redis',
       resave: false,
       saveUninitialized: true,
-      cookie: { secure: false }, // Note that the cookie-parser module is no longer needed
+      cookie: { secure: process.env.NODE_ENV === 'production' },
       store: new RedisStore({ client: redisClient, ttl: 86400 })
     }))
 
