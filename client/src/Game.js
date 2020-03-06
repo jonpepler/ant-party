@@ -36,7 +36,7 @@ export default class Game extends React.Component {
             <div className="game-instructions">
               <p>To start: In your terminal, run <code>npx ant-party</code></p>
               <div>
-                <p className="inline">When prompted, enter room code </p>
+                <p className="inline">When prompted, enter gamecode </p>
                 <div className="room-code room-code--inline">
                   {this.state.gamecode}
                 </div>
