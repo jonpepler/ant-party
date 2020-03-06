@@ -1,6 +1,6 @@
 {
   "name": "ant-party-server",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Backend for Ant Party",
   "main": "index.js",
   "scripts": {

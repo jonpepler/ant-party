@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.3](https://github.com/jonpepler/ant-party/compare/v0.0.2...v0.0.3) (2020-03-06)
+
+
+### Features
+
+* 🎸 Add a basic start game flow ([6726e4f](https://github.com/jonpepler/ant-party/commit/6726e4f7f9562e818bef5d2d3733cb03dd10ffe1))
+* 🎸 Add a hover effect on buttons ([795c401](https://github.com/jonpepler/ant-party/commit/795c4010788c21c319744ac5ca962a1b25c9f5fc))
+* 🎸 Allow players to join a game via ant-party-client ([3147632](https://github.com/jonpepler/ant-party/commit/3147632198ce82d4c74e1ba26ca7c50ec6322891))
+* 🎸 Return a game code when starting a game ([df23a60](https://github.com/jonpepler/ant-party/commit/df23a60ea5563eba75cc7ee145cf24daff360271))
+* 🎸 Update all terminology to refer to Games and gamecodes ([a85df7e](https://github.com/jonpepler/ant-party/commit/a85df7ed4731a92294c32cbad403352f1fe2c793))
+* 🎸 Use a secure cookie in production ([675106b](https://github.com/jonpepler/ant-party/commit/675106bf5244d7fb2ca4d8140519ba256f2d91cb))
+
+
+### Bug Fixes
+
+* 🐛 Correct client build path ([79acbef](https://github.com/jonpepler/ant-party/commit/79acbef9f3a1833bb44b282b58b071e018b0f714))
+* 🐛 Make node-sass a regular dependency ([41f2dab](https://github.com/jonpepler/ant-party/commit/41f2dab67c70d856c2d72a41f7b14be288639d40))
+
 ### [0.0.2](https://github.com/jonpepler/ant-party/compare/v0.0.1...v0.0.2) (2020-03-02)
 
 
