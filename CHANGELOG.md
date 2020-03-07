@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.1](https://github.com/jonpepler/ant-party/compare/v0.0.3...v0.1.1) (2020-03-07)
+
+
+### Features
+
+* 🎸 Receive game join requests over socket ([379c4c7](https://github.com/jonpepler/ant-party/commit/379c4c7d713092c062bacdebab7e256e9c42555b))
+* 🎸 Track game events via socket tracker in client ([065a5df](https://github.com/jonpepler/ant-party/commit/065a5df2a56980f194db6da48b29c2871fe1fc21))
+
 ### [0.0.3](https://github.com/jonpepler/ant-party/compare/v0.0.2...v0.0.3) (2020-03-06)
 
 
