@@ -23,6 +23,8 @@ const { app } = new App(
 
 const server = require('http').Server(app)
 
+require('./channels/socket')(server)
+
 const port = process.env.PORT || localPort
 
 server.listen(port, () => {
