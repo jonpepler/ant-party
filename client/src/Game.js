@@ -29,7 +29,7 @@ export default class Game extends React.Component {
   }
 
   connectTracker () {
-    const { gamecode } = this.state.gamecode
+    const { gamecode } = this.state
     this.socket.emit('joinGameTrackerRoom', { gamecode })
   }
 
