@@ -14,4 +14,4 @@ echo "Starting $container_name..."
 docker run --name $container_name -p 6379:6379 -d redis
 container_id=$(docker ps -aqf "name=${container_name}")
 
-nodemon index.js --ignore './client/'
+read -n 1 -s -r -p "Press any key to stop"
