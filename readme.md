@@ -4,6 +4,7 @@
 
 ## dev
 
+This project relies on a redis server. When running the scripts below, a script will be called that runs a redis Docker image.
 To start the dev server (client & backend), run:
 
 ```bash
@@ -11,28 +12,19 @@ npm i
 npm run dev
 ```
 
-This runs the dev server on port `8000` and you can view it here...
+This runs the dev server on port `8000` and you can view it here:
 
 http://localhost:8000/api/v1/test/
 
-...and then seperately run the client in the `./client` subdirectory, run:
+...and then seperately run the client in the `./client` subdirectory:
 
 ```bash
 cd ./client
 npm i
 npm run serve
-npm run test
 ```
 
-Or from the root
-
-```bash
-npm i --prefix client
-npm run serve --prefix client
-npm test --prefix client
-```
-
-http://localhost:8080/ should now host the app, and suport hot reloading.
+http://localhost:3000/ should now host the app, and suport hot reloading.
 
 ## contributing
 
