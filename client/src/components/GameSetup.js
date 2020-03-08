@@ -103,7 +103,7 @@ export default class GameSetup extends React.Component {
                   <p>To start: In your terminal, run <code>npx ant-party</code></p>
                   <div>
                     <p className="inline">When prompted, enter gamecode </p>
-                    <div className="room-code room-code--inline">
+                    <div className="gamecode gamecode--inline">
                       {this.state.gamecode}
                     </div>
                   </div>
