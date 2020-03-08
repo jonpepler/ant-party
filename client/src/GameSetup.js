@@ -38,6 +38,14 @@ export default class GameSetup extends React.Component {
         })}
       })
     })
+
+    this.socket.on('tracker:playerLeft', data => {
+      const { playerID } = data
+      console.log(`socket player left: ${playerID}`)
+      this.setState(s => {
+        return { players: s.players.filter(player => player.id !== playerID) }
+      })
+    })
   }
 
   connectTracker () {

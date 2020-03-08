@@ -11,11 +11,15 @@ class Player {
   }
 
   static async findOrCreate (sessionID, name) {
-    let id = await redis.hget(key(sessionID), 'id')
+    let id = await this.find(sessionID)
     if (id === null) {
       id = Player.create(sessionID, name)
     }
     return id
+  }
+
+  static async find (sessionID) {
+    return redis.hget(key(sessionID), 'id')
   }
 }
 

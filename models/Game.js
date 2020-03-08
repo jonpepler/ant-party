@@ -2,10 +2,14 @@ const { redis } = require('./../redis')
 
 const state = ['joining', 'started', 'complete']
 
+const gameKey = gamecode => `game:${gamecode}`
+const gamePlayersKey = gamecode => `game:${gamecode}:players`
+
 class Game {
   static create () {
     const gamecode = this.generateCode()
-    redis.hset(`game:${gamecode}`, 'state', 0)
+    redis.hset(gameKey(gamecode), 'state', 0)
+    redis.sadd('games', gamecode)
     return gamecode
   }
 
@@ -17,7 +21,7 @@ class Game {
   }
 
   static async getData (gamecode, key) {
-    const res = await redis.hget(`game:${gamecode}`, key)
+    const res = await redis.hget(gameKey(gamecode), key)
     return res
   }
 
@@ -38,7 +42,7 @@ class Game {
   static addPlayer (gamecode, playerID) {
     const exists = this.gameExists(gamecode)
     if (exists) {
-      redis.sadd(`game:players:${gamecode}`, playerID)
+      redis.sadd(gamePlayersKey(gamecode), playerID)
       return { result: true, error: null }
     }
     return {
@@ -51,7 +55,25 @@ class Game {
   }
 
   static async getPlayers (gamecode) {
-    return redis.smembers(`game:players:${gamecode}`)
+    return redis.smembers(gamePlayersKey(gamecode))
+  }
+
+  static async findByPlayerID (playerID) {
+    const games = await redis.smembers('games')
+
+    const gamesWithPlayers = await Promise.all(games.map(async (gamecode) => {
+      const players = await redis.smembers(gamePlayersKey(gamecode))
+      return { gamecode, players }
+    }))
+
+    let gamecode = null
+    gamesWithPlayers.some(game => {
+      if (game.players.includes(playerID)) {
+        gamecode = game.gamecode
+      }
+    })
+
+    return gamecode
   }
 
   static async joinable (gamecode) {
