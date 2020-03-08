@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/jonpepler/ant-party/compare/v0.1.2...v0.2.0) (2020-03-08)
+
+
+### Features
+
+* 🎸 Show player IDs in web client when they join ([f5eef4c](https://github.com/jonpepler/ant-party/commit/f5eef4ce61b4eaf2c770fd7bac10ee3df935f4fa))
+* 🎸 Show player names when they join a game ([1acd87b](https://github.com/jonpepler/ant-party/commit/1acd87bac06647f1a4989d7601474edcd95e49d6))
+* 🎸 Track when players leave and show in the web view ([b732404](https://github.com/jonpepler/ant-party/commit/b73240455720d7e6899c3641b4bbc59d9bfb25f4))
+
+
+### Bug Fixes
+
+* 🐛 Fix redis dev script attempting to run the application ([47517a3](https://github.com/jonpepler/ant-party/commit/47517a3f112e464c028f371cf107440aaf578d35))
+
 ### [0.1.2](https://github.com/jonpepler/ant-party/compare/v0.1.1...v0.1.2) (2020-03-07)
 
 ### [0.1.1](https://github.com/jonpepler/ant-party/compare/v0.0.3...v0.1.1) (2020-03-07)
