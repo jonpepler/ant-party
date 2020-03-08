@@ -13,6 +13,8 @@ module.exports = server => {
           if (gamecode !== null) {
             io.to(`game:${gamecode}:tracker`).emit('tracker:playerLeft', { playerID })
           }
+
+          Player.delete(socket.id)
         }
         console.log(`Player/Tracker disconnected: ${socket.id}`)
       },

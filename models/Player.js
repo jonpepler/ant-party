@@ -21,6 +21,10 @@ class Player {
   static async find (sessionID) {
     return redis.hget(key(sessionID), 'id')
   }
+
+  static async delete (sessionID) {
+    return redis.del(key(sessionID))
+  }
 }
 
 module.exports = Player
