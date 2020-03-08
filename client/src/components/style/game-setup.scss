@@ -1,0 +1,19 @@
+.game-setup {
+  position: relative;
+}
+
+.player-list {
+  color: $text-colour;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 175px;
+}
+
+.player {
+  width: 100vw;
+
+  & + & {
+    margin-top: 15px;
+  }
+}

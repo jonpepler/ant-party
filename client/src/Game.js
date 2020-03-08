@@ -4,17 +4,19 @@ import io from 'socket.io-client'
 
 import ErrorMessage from './ErrorMessage'
 
-export default class Game extends React.Component {
+export default class GameSetup extends React.Component {
   constructor () {
     super()
 
     this.setSocketFunctions = this.setSocketFunctions.bind(this)
     this.connectTracker = this.connectTracker.bind(this)
     this.getGamecode = this.getGamecode.bind(this)
+    this.renderPlayers = this.renderPlayers.bind(this)
 
     this.state = {
       gamecode: 'loading...',
-      started: false
+      started: false,
+      players: []
     }
 
     this.getGamecode()
@@ -23,8 +25,15 @@ export default class Game extends React.Component {
   }
 
   setSocketFunctions () {
-    this.socket.on('joinGameTrackerRoom', (data) => {
+    this.socket.on('joinGameTrackerRoom', data => {
       if (data.message === 'joined') console.log('socket: tracking game')
+    })
+    this.socket.on('tracker:playerJoined', data => {
+      const { playerID } = data
+      console.log(`socket player joined: ${playerID}`)
+      this.setState(s => {
+        return { players: s.players.concat(playerID) }
+      })
     })
   }
 
@@ -45,21 +54,38 @@ export default class Game extends React.Component {
       })
   }
 
+  renderPlayers () {
+    return (
+      <div className="player-list">
+        {this.state.players.map(player => (
+          <div className="player" key={player}>
+            {player}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
   render () {
     return (
-      <div className="game">
+      <div className="game-setup">
         {!this.state.started ?
           (
-            <div className="game-instructions">
-              <p>To start: In your terminal, run <code>npx ant-party</code></p>
-              <div>
-                <p className="inline">When prompted, enter gamecode </p>
-                <div className="room-code room-code--inline">
-                  {this.state.gamecode}
+            <React.Fragment>
+              <div className="game-instructions">
+                <p>To start: In your terminal, run <code>npx ant-party</code></p>
+                <div>
+                  <p className="inline">When prompted, enter gamecode </p>
+                  <div className="room-code room-code--inline">
+                    {this.state.gamecode}
+                  </div>
                 </div>
+                {this.state.error ? (<ErrorMessage message={this.state.error}/>) : undefined}
               </div>
-              {this.state.error ? (<ErrorMessage message={this.state.error}/>) : undefined}
-            </div>
+              <React.Fragment>
+                {this.renderPlayers()}
+              </React.Fragment>
+            </React.Fragment>
           )
           :
           (
