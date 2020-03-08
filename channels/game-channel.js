@@ -13,14 +13,14 @@ module.exports = (io, socket) => {
     },
 
     joinGame: async data => {
-      const { gamecode } = data
+      const { gamecode, playerName } = data
       const joinable = await Game.joinable(gamecode)
 
       let response = {}
       if (joinable) {
-        const playerID = await Player.findOrCreate(socket.id)
+        const playerID = await Player.findOrCreate(socket.id, playerName)
         response = await Game.addPlayer(gamecode, playerID)
-        io.to(trackerRoomKey(gamecode)).emit('tracker:playerJoined', { playerID })
+        io.to(trackerRoomKey(gamecode)).emit('tracker:playerJoined', { playerID, playerName })
       } else {
         response = {
           result: false,

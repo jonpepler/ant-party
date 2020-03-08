@@ -29,10 +29,13 @@ export default class GameSetup extends React.Component {
       if (data.message === 'joined') console.log('socket: tracking game')
     })
     this.socket.on('tracker:playerJoined', data => {
-      const { playerID } = data
+      const { playerID, playerName } = data
       console.log(`socket player joined: ${playerID}`)
       this.setState(s => {
-        return { players: s.players.concat(playerID) }
+        return { players: s.players.concat({
+          id: playerID,
+          name: playerName
+        })}
       })
     })
   }
@@ -58,8 +61,8 @@ export default class GameSetup extends React.Component {
     return (
       <div className="player-list">
         {this.state.players.map(player => (
-          <div className="player" key={player}>
-            {player}
+          <div className="player" key={player.id}>
+            {player.name}
           </div>
         ))}
       </div>

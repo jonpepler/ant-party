@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import '@csstools/normalize.css';
 import './App.scss'
 
-import Game from './Game.js'
+import GameSetup from './GameSetup'
 import APITest from './APITest.js'
 
 function App () {
@@ -11,7 +11,7 @@ function App () {
     <div className='app'>
       <main className='main-content'>
         {gameStarted ?
-          (<Game/>)
+          (<GameSetup/>)
           : 
           (
             <React.Fragment>

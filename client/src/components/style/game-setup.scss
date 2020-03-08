@@ -11,6 +11,7 @@
 }
 
 .player {
+  animation: fadein 2s;
   width: 100vw;
 
   & + & {
