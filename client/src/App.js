@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import '@csstools/normalize.css';
 import './App.scss'
 
-import GameSetup from './GameSetup'
+import GameSetup from './components/GameSetup'
 import APITest from './APITest.js'
 
 function App () {

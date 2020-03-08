@@ -3,6 +3,7 @@ import axios from 'axios'
 import io from 'socket.io-client'
 
 import ErrorMessage from './ErrorMessage'
+import Game from './Game'
 
 export default class GameSetup extends React.Component {
   constructor () {
@@ -12,6 +13,7 @@ export default class GameSetup extends React.Component {
     this.connectTracker = this.connectTracker.bind(this)
     this.getGamecode = this.getGamecode.bind(this)
     this.renderPlayers = this.renderPlayers.bind(this)
+    this.renderStartButton = this.renderStartButton.bind(this)
 
     this.state = {
       gamecode: 'loading...',
@@ -77,33 +79,47 @@ export default class GameSetup extends React.Component {
     )
   }
 
+  renderStartButton () {
+    if (this.state.players.length > 0) {
+      return (
+        <div className="button-container fixed-bottom fixed-bottom--animated">
+          <button onClick={() => this.setState({ started: true })}>
+            {`Start Game${this.state.players.length > 1 ? '' : ' (solo)'}`}
+          </button>
+        </div>
+      )
+    }
+    return undefined
+  }
+
   render () {
     return (
-      <div className="game-setup">
+      <React.Fragment>
         {!this.state.started ?
           (
             <React.Fragment>
-              <div className="game-instructions">
-                <p>To start: In your terminal, run <code>npx ant-party</code></p>
-                <div>
-                  <p className="inline">When prompted, enter gamecode </p>
-                  <div className="room-code room-code--inline">
-                    {this.state.gamecode}
+              <div className="game-setup">
+                <div className="game-instructions">
+                  <p>To start: In your terminal, run <code>npx ant-party</code></p>
+                  <div>
+                    <p className="inline">When prompted, enter gamecode </p>
+                    <div className="room-code room-code--inline">
+                      {this.state.gamecode}
+                    </div>
                   </div>
+                  {this.state.error ? (<ErrorMessage message={this.state.error}/>) : undefined}
                 </div>
-                {this.state.error ? (<ErrorMessage message={this.state.error}/>) : undefined}
-              </div>
-              <React.Fragment>
                 {this.renderPlayers()}
-              </React.Fragment>
+              </div>
+              {this.renderStartButton()}
             </React.Fragment>
-          )
+      )
           :
           (
-            <div>Game!</div>
+            <Game/>
           )
         }
-      </div>
+      </React.Fragment>
     )
   }
 }

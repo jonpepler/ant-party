@@ -67,6 +67,22 @@ button {
   }
 }
 
+.button-container {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.fixed-bottom {
+  bottom: 50px;
+  position: absolute;
+
+  &--animated {
+    animation: fadein 1s;
+  }
+}
+
 code {
   background-color: $secondary-highlight-colour;
   border-radius: 5px;
