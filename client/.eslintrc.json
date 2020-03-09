@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "react-app",
+    "standard",
+    "standard-react"
+  ],
+  "root": true,
+  "env": {
+    "node": true
+  },
+  "parserOptions": {
+    "parser": "babel-eslint"
+  },
+  "ignorePatterns": ["build/", "node_modules/"],
+  "rules": {}
+}
