@@ -2,14 +2,15 @@ const { redis } = require('./../redis')
 
 const state = ['joining', 'started', 'complete']
 
-const gameKey = gamecode => `game:${gamecode}`
-const gamePlayersKey = gamecode => `game:${gamecode}:players`
-const gameHostKey = gamecode => `game:${gamecode}:host`
+const key = gamecode => `game:${gamecode}`
+const playersKey = gamecode => `game:${gamecode}:players`
+const hostKey = gamecode => `game:${gamecode}:host`
+const trackerRoomKey = gamecode => `game:${gamecode}:tracker`
 
 class Game {
   static create () {
     const gamecode = this.generateCode()
-    redis.hset(gameKey(gamecode), 'state', 0)
+    redis.hset(key(gamecode), 'state', 0)
     redis.sadd('games', gamecode)
     return gamecode
   }
@@ -24,7 +25,7 @@ class Game {
   static async assignHost (gamecode, hostID) {
     const exists = await this.gameExists(gamecode)
     if (exists) {
-      redis.set(gameHostKey(gamecode), hostID)
+      redis.set(hostKey(gamecode), hostID)
       return { result: true, error: null }
     }
     return {
@@ -71,14 +72,14 @@ class Game {
   }
 
   static async getPlayers (gamecode) {
-    return redis.smembers(gamePlayersKey(gamecode))
+    return redis.smembers(playersKey(gamecode))
   }
 
   static async findByPlayerID (playerID) {
     const games = await redis.smembers('games')
 
     const gamesWithPlayers = await Promise.all(games.map(async (gamecode) => {
-      const players = await redis.smembers(gamePlayersKey(gamecode))
+      const players = await redis.smembers(playersKey(gamecode))
       return { gamecode, players }
     }))
 
@@ -98,4 +99,10 @@ class Game {
   }
 }
 
-module.exports = Game
+module.exports.Game = Game
+module.exports.gameKeys = {
+  key,
+  playersKey,
+  hostKey,
+  trackerRoomKey
+}

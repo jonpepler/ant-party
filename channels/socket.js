@@ -1,5 +1,5 @@
 const Player = require('../models/Player')
-const Game = require('../models/Game')
+const { Game, gameKeys } = require('../models/Game')
 
 module.exports = server => {
   const io = require('socket.io')(server)
@@ -11,7 +11,7 @@ module.exports = server => {
           const gamecode = await Game.findByPlayerID(playerID)
 
           if (gamecode !== null) {
-            io.to(`game:${gamecode}:tracker`).emit('tracker:playerLeft', { playerID })
+            io.to(gameKeys.trackerRoomKey(gamecode)).emit('tracker:playerLeft', { playerID })
           }
 
           Player.delete(socket.id)
