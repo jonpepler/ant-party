@@ -1,13 +1,11 @@
-const Game = require('^models/Game')
+const { Game, gameKeys } = require('^models/Game')
 const Player = require('^models/Player')
-
-const trackerRoomKey = gamecode => `game:${gamecode}:tracker`
 
 module.exports = (io, socket) => {
   return {
     joinGameTrackerRoom: async data => {
       const { gamecode } = data
-      socket.join(trackerRoomKey(gamecode))
+      socket.join(gameKeys.trackerRoomKey(gamecode))
       const { result, error } = await Game.assignHost(gamecode, socket.id)
       if (result) {
         socket.emit('joinGameTrackerRoom', { message: 'joined' })
@@ -25,7 +23,8 @@ module.exports = (io, socket) => {
       if (joinable) {
         const playerID = await Player.findOrCreate(socket.id, playerName)
         response = await Game.addPlayer(gamecode, playerID)
-        io.to(trackerRoomKey(gamecode)).emit('tracker:playerJoined', { playerID, playerName })
+        socket.join(gameKeys.key(gamecode))
+        io.to(gameKeys.trackerRoomKey(gamecode)).emit('tracker:playerJoined', { playerID, playerName })
       } else {
         response = {
           result: false,
@@ -39,10 +38,12 @@ module.exports = (io, socket) => {
       socket.emit('joinGame', response)
     },
 
-    joinGameRoom: data => {
+    gameStart: data => {
       const { gamecode } = data
-      socket.join(`game:${gamecode}`)
-      socket.emit('joinGameRoom', { message: 'joined' })
+      console.log(`${gamecode} started`)
+      Game.setState(gamecode, 'started')
+      io.to(gameKeys.key(gamecode)).emit('gameStart')
     }
+
   }
 }

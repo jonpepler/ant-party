@@ -22,7 +22,7 @@ export default class Game extends React.Component {
   }
 
   reportGameStart = () => {
-    this.props.socket.emit('game:start', this.props.gamecode)
+    this.props.socket.emit('gameStart', { gamecode: this.props.gamecode })
   }
 
   handleMove = () => {

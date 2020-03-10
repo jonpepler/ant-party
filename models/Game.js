@@ -37,14 +37,26 @@ class Game {
     }
   }
 
-  static async getData (gamecode, key) {
-    const res = await redis.hget(gameKey(gamecode), key)
+  static async getData (gamecode, field) {
+    const res = await redis.hget(key(gamecode), field)
     return res
+  }
+
+  static setData (gamecode, field, value) {
+    return redis.hset(key(gamecode), field, value)
   }
 
   static async getState (gamecode) {
     const state = await this.getData(gamecode, 'state')
     return parseInt(state)
+  }
+
+  static setState (gamecode, stateString) {
+    const possibleState = state.includes(stateString)
+    if (possibleState) {
+      return this.setData(gamecode, 'state', state.indexOf(stateString))
+    }
+    return 0
   }
 
   static async getStateString (gamecode) {
@@ -58,14 +70,15 @@ class Game {
 
   static async addPlayer (gamecode, playerID) {
     const exists = await this.gameExists(gamecode)
-    if (exists) {
-      redis.sadd(gamePlayersKey(gamecode), playerID)
+    const state = await this.getState(gamecode)
+    if (exists && state === 0) {
+      redis.sadd(playersKey(gamecode), playerID)
       return { result: true, error: null }
     }
     return {
       result: false,
       error: {
-        message: 'No game exists with that code.',
+        message: 'No joinable game exists with that code.',
         status: 405
       }
     }
