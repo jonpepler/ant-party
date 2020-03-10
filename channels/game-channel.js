@@ -5,11 +5,16 @@ const trackerRoomKey = gamecode => `game:${gamecode}:tracker`
 
 module.exports = (io, socket) => {
   return {
-    joinGameTrackerRoom: data => {
+    joinGameTrackerRoom: async data => {
       const { gamecode } = data
       socket.join(trackerRoomKey(gamecode))
-      socket.emit('joinGameTrackerRoom', { message: 'joined' })
-      console.log('new tracker')
+      const { result, error } = await Game.assignHost(gamecode, socket.id)
+      if (result) {
+        socket.emit('joinGameTrackerRoom', { message: 'joined' })
+        console.log('new tracker')
+      } else {
+        console.error(error)
+      }
     },
 
     joinGame: async data => {

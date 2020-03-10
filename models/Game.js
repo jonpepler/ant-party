@@ -4,6 +4,7 @@ const state = ['joining', 'started', 'complete']
 
 const gameKey = gamecode => `game:${gamecode}`
 const gamePlayersKey = gamecode => `game:${gamecode}:players`
+const gameHostKey = gamecode => `game:${gamecode}:host`
 
 class Game {
   static create () {
@@ -18,6 +19,21 @@ class Game {
     const min = 111111
     const max = 999999
     return Math.floor(Math.random() * (max - min + 1)) + min
+  }
+
+  static async assignHost (gamecode, hostID) {
+    const exists = await this.gameExists(gamecode)
+    if (exists) {
+      redis.set(gameHostKey(gamecode), hostID)
+      return { result: true, error: null }
+    }
+    return {
+      result: false,
+      error: {
+        message: 'No game exists with that code.',
+        status: 405
+      }
+    }
   }
 
   static async getData (gamecode, key) {
@@ -39,8 +55,8 @@ class Game {
     return state !== null
   }
 
-  static addPlayer (gamecode, playerID) {
-    const exists = this.gameExists(gamecode)
+  static async addPlayer (gamecode, playerID) {
+    const exists = await this.gameExists(gamecode)
     if (exists) {
       redis.sadd(gamePlayersKey(gamecode), playerID)
       return { result: true, error: null }

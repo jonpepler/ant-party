@@ -1,12 +1,47 @@
 import React from 'react'
-import axios from 'axios'
-import io from 'socket.io-client'
-
+import PropTypes from 'prop-types'
+import GameSketch from './p5/GameSketch'
 
 export default class Game extends React.Component {
+  constructor (props) {
+    super(props)
+
+    this.setSocketFunctions = this.setSocketFunctions.bind(this)
+    this.reportGameStart = this.reportGameStart.bind(this)
+
+    this.setSocketFunctions()
+    this.reportGameStart()
+  }
+
+  state = { x: 10, y: 10 }
+
+  setSocketFunctions = () => {
+    this.props.socket.on('test', data => {
+      console.log('pass', data)
+    })
+  }
+
+  reportGameStart = () => {
+    this.props.socket.emit('game:start', this.props.gamecode)
+  }
+
+  handleMove = () => {
+    this.setState(s => {
+      return { x: s.x + 10, y: s.y + 10 }
+    })
+  }
+
   render () {
     return (
-      <div>Game!</div>
+      <>
+        <button onClick={this.handleMove}>Move</button>
+        <GameSketch x={this.state.x} y={this.state.y} />
+      </>
     )
   }
+}
+
+Game.propTypes = {
+  gamecode: PropTypes.number,
+  socket: PropTypes.object
 }
