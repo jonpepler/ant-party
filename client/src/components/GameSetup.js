@@ -34,10 +34,12 @@ export default class GameSetup extends React.Component {
       const { playerID, playerName } = data
       console.log(`socket player joined: ${playerID}`)
       this.setState(s => {
-        return { players: s.players.concat({
-          id: playerID,
-          name: playerName
-        })}
+        return {
+          players: s.players.concat({
+            id: playerID,
+            name: playerName
+          })
+        }
       })
     })
 
@@ -69,9 +71,9 @@ export default class GameSetup extends React.Component {
 
   renderPlayers () {
     return (
-      <div className="player-list">
+      <div className='player-list'>
         {this.state.players.map(player => (
-          <div className="player" key={player.id}>
+          <div className='player' key={player.id}>
             {player.name}
           </div>
         ))}
@@ -82,7 +84,7 @@ export default class GameSetup extends React.Component {
   renderStartButton () {
     if (this.state.players.length > 0) {
       return (
-        <div className="button-container fixed-bottom fixed-bottom--animated">
+        <div className='button-container fixed-bottom fixed-bottom--animated'>
           <button onClick={() => this.setState({ started: true })}>
             {`Start Game${this.state.players.length > 1 ? '' : ' (solo)'}`}
           </button>
@@ -94,32 +96,34 @@ export default class GameSetup extends React.Component {
 
   render () {
     return (
-      <React.Fragment>
-        {!this.state.started ?
-          (
-            <React.Fragment>
-              <div className="game-setup">
-                <div className="game-instructions">
+      <>
+        {!this.state.started
+          ? (
+            <>
+              <div className='game-setup'>
+                <div className='game-instructions'>
                   <p>To start: In your terminal, run <code>npx ant-party</code></p>
                   <div>
-                    <p className="inline">When prompted, enter gamecode </p>
-                    <div className="gamecode gamecode--inline">
+                    <p className='inline'>When prompted, enter gamecode </p>
+                    <div className='gamecode gamecode--inline'>
                       {this.state.gamecode}
                     </div>
                   </div>
-                  {this.state.error ? (<ErrorMessage message={this.state.error}/>) : undefined}
+                  {this.state.error ? (<ErrorMessage message={this.state.error} />) : undefined}
                 </div>
                 {this.renderPlayers()}
               </div>
               {this.renderStartButton()}
-            </React.Fragment>
-      )
-          :
-          (
-            <Game/>
+            </>
           )
-        }
-      </React.Fragment>
+          : (
+            <Game
+              gamecode={this.state.gamecode}
+              socket={this.socket}
+              players={this.state.players}
+            />
+          )}
+      </>
     )
   }
 }

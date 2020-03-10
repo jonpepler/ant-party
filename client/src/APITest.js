@@ -14,4 +14,4 @@ const APITest = () => {
   return (<p>{apiResponse}</p>)
 }
 
-export default APITest;
+export default APITest
