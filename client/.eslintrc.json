@@ -1,8 +1,13 @@
 {
+  "plugins": [
+    "react"
+  ],
   "extends": [
     "react-app",
     "standard",
-    "standard-react"
+    "standard-react",
+    "eslint:recommended",
+    "plugin:react/recommended"
   ],
   "root": true,
   "env": {

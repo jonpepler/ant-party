@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import '@csstools/normalize.css';
+import '@csstools/normalize.css'
 import './App.scss'
 
 import GameSetup from './components/GameSetup'
@@ -10,11 +10,10 @@ function App () {
   return (
     <div className='app'>
       <main className='main-content'>
-        {gameStarted ?
-          (<GameSetup/>)
-          : 
-          (
-            <React.Fragment>
+        {gameStarted
+          ? (<GameSetup />)
+          : (
+            <>
               <header className='app-header'>
                 <h1>Ant Party</h1>
               </header>
@@ -23,9 +22,9 @@ function App () {
                   Start a Game
                 </button>
               </nav>
-            </React.Fragment>
+            </>
           )}
-          
+
       </main>
       <footer>
         <APITest />
