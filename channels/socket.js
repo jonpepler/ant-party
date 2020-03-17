@@ -19,7 +19,8 @@ module.exports = server => {
         console.log(`Player/Tracker disconnected: ${socket.id}`)
       },
 
-      ...require('./game-channel')(io, socket)
+      ...require('./game-channel')(io, socket),
+      ...require('./player-channel')(io, socket)
     }
 
     for (const name in socketFunctions) {
