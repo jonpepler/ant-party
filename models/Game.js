@@ -37,6 +37,21 @@ class Game {
     }
   }
 
+  static async confirmHost (gamecode, suspiciousID) {
+    const exists = await this.gameExists(gamecode)
+    if (exists) {
+      const hostID = await redis.get(hostKey(gamecode))
+      return { result: hostID === suspiciousID, error: null }
+    }
+    return {
+      result: false,
+      error: {
+        message: 'No game exists with that code.',
+        status: 405
+      }
+    }
+  }
+
   static async getData (gamecode, field) {
     const res = await redis.hget(key(gamecode), field)
     return res

@@ -38,11 +38,16 @@ module.exports = (io, socket) => {
       socket.emit('joinGame', response)
     },
 
-    gameStart: data => {
+    gameStart: async data => {
       const { gamecode } = data
-      console.log(`${gamecode} started`)
-      Game.setState(gamecode, 'started')
-      io.to(gameKeys.key(gamecode)).emit('gameStart')
+      const authorised = await Game.confirmHost(gamecode, socket.id)
+      if (authorised) {
+        console.log(`${gamecode} started`)
+        Game.setState(gamecode, 'started')
+        io.to(gameKeys.key(gamecode)).emit('gameStart')
+      } else {
+        socket.emit('gameStart', { result: false, error: { status: 401, message: 'Unauthorised' } })
+      }
     }
 
   }
