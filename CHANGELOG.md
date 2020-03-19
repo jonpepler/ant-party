@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/jonpepler/ant-party/compare/v0.2.1...v0.3.0) (2020-03-19)
+
+
+### Features
+
+* 🎸 Delete player record when they quit ([172b32f](https://github.com/jonpepler/ant-party/commit/172b32feff92175a3dde8bc71e15883d75397c6b))
+* 🎸 Only allow game admin from the game host ([12cd6cd](https://github.com/jonpepler/ant-party/commit/12cd6cd0228873ad1c1c78910b60f5c6d714054c))
+* 🎸 Reflect submitted ant.js files back to the players ([4bfa470](https://github.com/jonpepler/ant-party/commit/4bfa470f1a2598ec3c2588064339c054066f6713))
+* 🎸 Show a start button when enough players have joined ([4034ab8](https://github.com/jonpepler/ant-party/commit/4034ab8cf94869e480bcf108de35a97ed0c0abfa))
+* 🎸 Show a very basic p5 canvas on game start ([a8fa6dd](https://github.com/jonpepler/ant-party/commit/a8fa6ddf04de46035e3186a2ab7e4396ff273431))
+* 🎸 Show basic ants and dirt in scalable P5 demo ([816ab5e](https://github.com/jonpepler/ant-party/commit/816ab5e87a3fa78ed4659e6833ddfc80cf7c3a3b))
+* 🎸 Show connection error in footer when con fails happen ([8e2e666](https://github.com/jonpepler/ant-party/commit/8e2e6667d51906591de96168da628f8329428859))
+* 🎸 Start game when instructed by host ([2df4b93](https://github.com/jonpepler/ant-party/commit/2df4b9312edf77d54bfa83a509d23a746f814271))
+
+
+### Bug Fixes
+
+* 🐛 Add missing dependencies (p5/react-p5) ([5743e15](https://github.com/jonpepler/ant-party/commit/5743e155e773491196a2cfd3af47bbe09f08767e))
+
 ### [0.2.1](https://github.com/jonpepler/ant-party/compare/v0.2.0...v0.2.1) (2020-03-08)
 
 ## [0.2.0](https://github.com/jonpepler/ant-party/compare/v0.1.2...v0.2.0) (2020-03-08)
