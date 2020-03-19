@@ -13,8 +13,6 @@ export default class Game extends React.Component {
     this.reportGameStart()
   }
 
-  state = { x: 10, y: 10 }
-
   setSocketFunctions = () => {
     this.props.socket.on('test', data => {
       console.log('pass', data)
@@ -25,19 +23,8 @@ export default class Game extends React.Component {
     this.props.socket.emit('gameStart', { gamecode: this.props.gamecode })
   }
 
-  handleMove = () => {
-    this.setState(s => {
-      return { x: s.x + 10, y: s.y + 10 }
-    })
-  }
-
   render () {
-    return (
-      <>
-        <button onClick={this.handleMove}>Move</button>
-        <GameSketch x={this.state.x} y={this.state.y} />
-      </>
-    )
+    return <GameSketch />
   }
 }
 
