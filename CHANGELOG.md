@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.2](https://github.com/jonpepler/ant-party/compare/v0.3.1...v0.3.2) (2020-07-18)
+
+
+### Bug Fixes
+
+* 🐛 Re-add button border ([48d1c02](https://github.com/jonpepler/ant-party/commit/48d1c020efbc84b21cfa535baa4cada8c984bde4))
+
 ### [0.3.1](https://github.com/jonpepler/ant-party/compare/v0.3.0...v0.3.1) (2020-03-19)
 
 ## [0.3.0](https://github.com/jonpepler/ant-party/compare/v0.2.1...v0.3.0) (2020-03-19)
