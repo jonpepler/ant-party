@@ -21,7 +21,7 @@ http://localhost:8000/api/v1/test/
 ```bash
 cd ./client
 npm i
-npm run serve
+npm run start
 ```
 
 http://localhost:3000/ should now host the app, and suport hot reloading.
