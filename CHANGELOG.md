@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.6](https://github.com/jonpepler/ant-party/compare/v0.3.5...v0.3.6) (2021-01-08)
+
+
+### Bug Fixes
+
+* 🐛 Set node-sass back to 4.x.x ([9eeb36f](https://github.com/jonpepler/ant-party/commit/9eeb36f83a74b092dda1e70709f2200e06a918e3))
+
 ### [0.3.5](https://github.com/jonpepler/ant-party/compare/v0.3.4...v0.3.5) (2021-01-08)
 
 
