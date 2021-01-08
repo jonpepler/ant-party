@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Sketch from 'react-p5'
 
-import Coord from './util/Coord'
+import Nest from './objects/Nest'
 import Ant from './objects/Ant'
-import Dirt from './objects/Dirt'
 
 export default class GameSketch extends Component {
   targetSize = {
@@ -11,30 +11,33 @@ export default class GameSketch extends Component {
     h: 1080
   }
 
+  defaultFill = 255
+
   getWidth = () => document.querySelector('.main-content').offsetWidth
   getHeight = () => document.querySelector('.main-content').offsetHeight
-  getRelativeWidth = p5 => this.getWidth() / this.targetSize.w
-  getRelativeHeight = p5 => this.getHeight() / this.targetSize.h
-  getRelativeSize = p5 => ({ relativeWidth: this.getRelativeWidth(p5), relativeHeight: this.getRelativeHeight(p5) })
+  getRelativeWidth = () => this.getWidth() / this.targetSize.w
+  getRelativeHeight = () => this.getHeight() / this.targetSize.h
+  getRelativeSize = p5 => ({ relativeWidth: this.getRelativeWidth(), relativeHeight: this.getRelativeHeight() })
 
   setup = (p5, canvasParentRef) => {
     p5.createCanvas(this.targetSize.w, this.targetSize.h).parent(canvasParentRef)
     this.windowResized(p5)
   }
 
-  drawables = [
-    new Ant(new Coord(20, 20)),
-    new Ant(new Coord(1900, 1060)),
-    new Dirt(new Coord(990, 540)),
-    new Ant(new Coord(20, 1060)),
-    new Ant(new Coord(1900, 20))
-  ]
+  resetFill = p5 => p5.fill(this.defaultFill)
 
   draw = p5 => {
+    const { mapData } = this.props
+    const drawables = [
+      ...mapData.nests.map(nest => new Nest(nest.health, nest.points)),
+      ...mapData.ants.map(ant => new Ant(ant.x, ant.y))
+    ]
     this.setScale(p5)
     p5.background(63, 67, 79)
-    p5.fill(255)
-    this.drawables.forEach(drawable => { drawable.draw(p5) })
+    drawables.forEach(drawable => {
+      this.resetFill(p5)
+      drawable.draw(p5)
+    })
   }
 
   getScale = (p5, returnSizes) => {
@@ -68,4 +71,14 @@ export default class GameSketch extends Component {
       />
     )
   }
+}
+
+GameSketch.propTypes = {
+  increment: PropTypes.number,
+  mapData: PropTypes.shape({
+    ants: PropTypes.array,
+    nests: PropTypes.array,
+    players: PropTypes.array,
+    targetSize: PropTypes.object
+  })
 }

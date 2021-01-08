@@ -24,11 +24,17 @@ export default class Game extends React.Component {
   }
 
   render () {
-    return <GameSketch />
+    return <GameSketch mapData={this.props.mapData} />
   }
 }
 
 Game.propTypes = {
   gamecode: PropTypes.number,
-  socket: PropTypes.object
+  socket: PropTypes.object,
+  mapData: PropTypes.shape({
+    ants: PropTypes.array,
+    nests: PropTypes.array,
+    players: PropTypes.array,
+    targetSize: PropTypes.object
+  })
 }

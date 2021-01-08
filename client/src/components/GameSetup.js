@@ -50,6 +50,16 @@ export default class GameSetup extends React.Component {
         return { players: s.players.filter(player => player.id !== playerID) }
       })
     })
+
+    this.socket.on('gameStart', mapData => {
+      console.log('reported!', mapData)
+      this.setState({ started: true, mapData: JSON.parse(mapData) })
+    })
+
+    this.socket.on('mapData', mapData => {
+      console.log('tick', mapData)
+      this.setState({ mapData })
+    })
   }
 
   connectTracker () {
@@ -69,6 +79,10 @@ export default class GameSetup extends React.Component {
       })
   }
 
+  handleClickStart = () => {
+    this.socket.emit('gameStart', { gamecode: this.state.gamecode })
+  }
+
   renderPlayers () {
     return (
       <div className='player-list'>
@@ -85,7 +99,7 @@ export default class GameSetup extends React.Component {
     if (this.state.players.length > 0) {
       return (
         <div className='button-container fixed-bottom fixed-bottom--animated'>
-          <button onClick={() => this.setState({ started: true })}>
+          <button onClick={this.handleClickStart}>
             {`Start Game${this.state.players.length > 1 ? '' : ' (solo)'}`}
           </button>
         </div>
@@ -121,6 +135,7 @@ export default class GameSetup extends React.Component {
               gamecode={this.state.gamecode}
               socket={this.socket}
               players={this.state.players}
+              mapData={this.state.mapData}
             />
           )}
       </>

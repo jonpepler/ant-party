@@ -1,9 +1,12 @@
 const { redis } = require('./../redis')
+const Func = require('./Func')
+const GameData = require('./game_data/GameData')
 
 const state = ['joining', 'started', 'complete']
 
 const key = gamecode => `game:${gamecode}`
 const playersKey = gamecode => `game:${gamecode}:players`
+const antFileKey = (gamecode, playerID) => `antfile:${gamecode}:${playerID}`
 const hostKey = gamecode => `game:${gamecode}:host`
 const trackerRoomKey = gamecode => `game:${gamecode}:tracker`
 
@@ -53,12 +56,33 @@ class Game {
   }
 
   static async getData (gamecode, field) {
-    const res = await redis.hget(key(gamecode), field)
-    return res
+    return redis.hget(key(gamecode), field)
   }
 
   static setData (gamecode, field, value) {
     return redis.hset(key(gamecode), field, value)
+  }
+
+  static setMapData (gamecode, mapData) {
+    this.setData(gamecode, 'data', JSON.stringify(mapData))
+  }
+
+  static async getMapData (gamecode) {
+    return JSON.parse(await this.getData(gamecode, 'data'))
+  }
+
+  static async updateAntFile (gamecode, playerID, antfile) {
+    const newVersion = redis.rpush(antFileKey(gamecode, playerID), antfile) - 1
+    return newVersion
+  }
+
+  static async getAntFile (gamecode, playerID, version) {
+    const file = await redis.lrange(antFileKey(gamecode, playerID), version, version)
+    return file ? file[0] : null
+  }
+
+  static async getAntFileLatestVersion (gamecode, playerID) {
+    return await redis.llen(antFileKey(gamecode, playerID)) - 1
   }
 
   static async getState (gamecode) {
@@ -66,9 +90,17 @@ class Game {
     return parseInt(state)
   }
 
-  static setState (gamecode, stateString) {
+  static async initialiseGameMapData (gamecode) {
+    const template = GameData.newGameTemplate(await this.getPlayers(gamecode))
+    this.setMapData(gamecode, template)
+  }
+
+  static async setState (gamecode, stateString) {
     const possibleState = state.includes(stateString)
     if (possibleState) {
+      if (stateString === 'started') {
+        this.initialiseGameMapData(gamecode)
+      }
       return this.setData(gamecode, 'state', state.indexOf(stateString))
     }
     return 0
@@ -87,6 +119,7 @@ class Game {
     const exists = await this.gameExists(gamecode)
     const state = await this.getState(gamecode)
     if (exists && state === 0) {
+      console.log(`adding player ${playerID} to ${gamecode}`)
       redis.sadd(playersKey(gamecode), playerID)
       return { result: true, error: null }
     }
@@ -124,6 +157,105 @@ class Game {
   static async joinable (gamecode) {
     const state = await this.getState(gamecode)
     return state === 0
+  }
+
+  // TODO
+  static randomFreePointAroundNest (mapData, nest) {
+    return [5, 5]
+  }
+
+  static newAnt (x, y, player, antFileVersion) {
+    return {
+      x,
+      y,
+      health: 10,
+      player,
+      antFileVersion
+    }
+  }
+
+  static translateDirectionToMovement (direction) {
+    switch (direction) {
+      case 0:
+        return { x: 0, y: -1 }
+      case 1:
+        return { x: 1, y: -1 }
+      case 2:
+        return { x: 1, y: 0 }
+      case 3:
+        return { x: 1, y: 1 }
+      case 4:
+        return { x: 0, y: 1 }
+      case 5:
+        return { x: -1, y: 1 }
+      case 6:
+        return { x: -1, y: 0 }
+      case 7:
+        return { x: -1, y: -1 }
+    }
+  }
+
+  static async tick (gamecode, io, timestamp) {
+    let mapData
+    try {
+      mapData = await Game.getMapData(gamecode)
+    } catch (e) {
+      console.error(e)
+    }
+    const newTimestamp = Date.now()
+    const newAnts = (newTimestamp - timestamp > 5000)
+    let gameFinished = false
+    // could collect antFuncs into array and use Promise.all
+    for (const ant of mapData.ants) {
+      /// build ant object for ant
+      /// pass ant object to ant's antfile version
+      /// use result to get an action + pheromone
+      /// apply action (if possible) to mapData
+      /// release pheromone at location on mapData
+      const antObj = {
+        senses: Array.from({ length: 8 }),
+        health: ant.health
+      }
+      let antFile
+      try {
+        antFile = await Game.getAntFile(gamecode, ant.player, ant.antFileVersion)
+      } catch (e) {
+        console.error(e)
+      }
+      const antFunc = new Func(antFile, antObj)
+      const actions = await antFunc.run()
+      if (actions.move) {
+        const movement = Game.translateDirectionToMovement(actions.move)
+        // add movement to position (ideally check if possible)
+        ant.x += movement.x
+        ant.y += movement.y
+      }
+    }
+
+    for (const nest of mapData.nests) {
+      /// resolve nest health
+      /// spawn new ants based on time (and food in future)
+      if (nest.health <= 0) gameFinished = true
+      if (nest.health > 0 && newAnts) {
+        // only create a new ant once there's an antFile
+        const antFileVersion = await Game.getAntFileLatestVersion(gamecode, nest.player)
+        if (antFileVersion >= 0) {
+          mapData.ants.push(
+            Game.newAnt(
+              ...Game.randomFreePointAroundNest(mapData, nest),
+              nest.player,
+              antFileVersion
+            )
+          )
+        }
+      }
+    }
+    console.log(Date.now(), mapData.ants)
+    // emit mapdata to game trackers
+    Game.setMapData(gamecode, mapData)
+    io.to(trackerRoomKey(gamecode)).emit('mapData', mapData)
+    // setInterval for 60 seconds, record time of schedule? for ants
+    if (!gameFinished) setTimeout(Game.tick, 1000, gamecode, io, newAnts ? newTimestamp : timestamp)
   }
 }
 

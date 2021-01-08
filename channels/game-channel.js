@@ -24,6 +24,7 @@ module.exports = (io, socket) => {
         const playerID = await Player.findOrCreate(socket.id, playerName)
         response = await Game.addPlayer(gamecode, playerID)
         socket.join(gameKeys.key(gamecode))
+        console.log(`${socket.id} joined ${gameKeys.key(gamecode)}. Rooms: ${socket.rooms}`)
         io.to(gameKeys.trackerRoomKey(gamecode)).emit('tracker:playerJoined', { playerID, playerName })
       } else {
         response = {
@@ -43,8 +44,11 @@ module.exports = (io, socket) => {
       const authorised = await Game.confirmHost(gamecode, socket.id)
       if (authorised) {
         console.log(`${gamecode} started`)
-        Game.setState(gamecode, 'started')
+        await Game.setState(gamecode, 'started')
+        const mapData = await Game.getData(gamecode, 'data')
         io.to(gameKeys.key(gamecode)).emit('gameStart')
+        io.to(gameKeys.trackerRoomKey(gamecode)).emit('gameStart', mapData)
+        Game.tick(gamecode, io, Date.now())
       } else {
         socket.emit('gameStart', { result: false, error: { status: 401, message: 'Unauthorised' } })
       }
