@@ -4,14 +4,12 @@ import './App.scss'
 
 import GameSetup from './components/GameSetup'
 import APITest from './APITest.js'
-import GameSketch from './components/p5/GameSketch'
 
 function App () {
   const [gameStarted, startGame] = useState(false)
   return (
     <div className='app'>
       <main className='main-content'>
-        {/* <GameSketch /> */}
         {gameStarted
           ? (<GameSetup />)
           : (

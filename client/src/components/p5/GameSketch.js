@@ -74,7 +74,6 @@ export default class GameSketch extends Component {
 }
 
 GameSketch.propTypes = {
-  increment: PropTypes.number,
   mapData: PropTypes.shape({
     ants: PropTypes.array,
     nests: PropTypes.array,
