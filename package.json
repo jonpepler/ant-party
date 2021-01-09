@@ -9,7 +9,7 @@
     "dev": "./dev.sh",
     "lint": "eslint . --fix",
     "commit": "npx git-cz",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "heroku-postbuild": "cd client && npm install && ./node_modules/.bin/eslint . && npm run build"
   },
   "pre-commit": [
     "lint"
