@@ -159,9 +159,18 @@ class Game {
     return state === 0
   }
 
-  // TODO
-  static randomFreePointAroundNest (mapData, nest) {
-    return [5, 5]
+  /* get list of free spawn points around nest
+    filter down that list by ants that are around it
+    randomly choose one point and return it */
+  static randomFreePointSpawnPoint (mapData, nest) {
+    const { spawnPoints } = nest
+    const freeSpawnPoints = spawnPoints
+      .filter(spawnPoint => mapData.ants
+        .every(ant => spawnPoint.x !== ant.x || spawnPoint.y !== ant.y))
+
+    return freeSpawnPoints.length
+      ? freeSpawnPoints[Math.floor(Math.random() * freeSpawnPoints.length)]
+      : null
   }
 
   static newAnt (x, y, player, antFileVersion) {
@@ -240,13 +249,17 @@ class Game {
         // only create a new ant once there's an antFile
         const antFileVersion = await Game.getAntFileLatestVersion(gamecode, nest.player)
         if (antFileVersion >= 0) {
-          mapData.ants.push(
-            Game.newAnt(
-              ...Game.randomFreePointAroundNest(mapData, nest),
-              nest.player,
-              antFileVersion
+          const spawnPoint = Game.randomFreePointSpawnPoint(mapData, nest)
+          if (spawnPoint) {
+            mapData.ants.push(
+              Game.newAnt(
+                spawnPoint.x,
+                spawnPoint.y,
+                nest.player,
+                antFileVersion
+              )
             )
-          )
+          }
         }
       }
     }

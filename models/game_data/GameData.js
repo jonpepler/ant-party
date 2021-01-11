@@ -1,6 +1,6 @@
 const { nestShape } = require('./Shapes')
 const nestPointsList = require('../../utils/NestPoints')
-const { translateShape } = require('../../utils/Geometry')
+const { translateShape, Coord } = require('../../utils/Geometry')
 
 class GameData {
   static newGameTemplate (players) {
@@ -9,15 +9,20 @@ class GameData {
       targetSize: { w: 1920, h: 1080 },
       players: players.map(player => ({ id: player })),
       nests: nestPointsList[players.length - 1].map(
-        (nestPoint, index) => ({
-          player: players[index],
-          points: translateShape(nestShape, nestPoint.x, nestPoint.y),
-          health: 100,
-          resources: {
-            dirt: 0,
-            food: 0
+        (nestPoint, index) => {
+          const nestPoints = translateShape(nestShape, nestPoint.x, nestPoint.y)
+          return {
+            player: players[index],
+            points: nestPoints,
+            spawnPoints: nestPoints,
+            health: 100,
+            resources: {
+              dirt: 0,
+              food: 0
+            }
           }
-        })),
+        }
+      ),
       ants: []
     }
   }
