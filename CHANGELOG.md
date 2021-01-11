@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.7](https://github.com/jonpepler/ant-party/compare/v0.3.6...v0.3.7) (2021-01-11)
+
+
+### Features
+
+* 🎸 Only spawn ants when requested by a player ([ccaae9a](https://github.com/jonpepler/ant-party/commit/ccaae9a6e466d1f7b3429ccc521e6146a075eda1))
+* 🎸 Spawn ants in at one of four free spawn points on nests ([2531b5a](https://github.com/jonpepler/ant-party/commit/2531b5ad384f0cadbe7a06a5533c9f28f09e5b87))
+
 ### [0.3.6](https://github.com/jonpepler/ant-party/compare/v0.3.5...v0.3.6) (2021-01-08)
 
 
