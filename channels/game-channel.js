@@ -52,6 +52,13 @@ module.exports = (io, socket) => {
       } else {
         socket.emit('gameStart', { result: false, error: { status: 401, message: 'Unauthorised' } })
       }
+    },
+
+    antSpawnRequest: async () => {
+      const playerID = await Player.find(socket.id)
+      const gamecode = await Game.findByPlayerID(playerID)
+      Game.newAntRequest(gamecode, playerID)
+      console.log('ant requested by', playerID)
     }
 
   }

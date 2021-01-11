@@ -9,6 +9,7 @@ const playersKey = gamecode => `game:${gamecode}:players`
 const antFileKey = (gamecode, playerID) => `antfile:${gamecode}:${playerID}`
 const hostKey = gamecode => `game:${gamecode}:host`
 const trackerRoomKey = gamecode => `game:${gamecode}:tracker`
+const newAntQueueKey = gamecode => `game:${gamecode}:antqueue`
 
 class Game {
   static create () {
@@ -173,6 +174,22 @@ class Game {
       : null
   }
 
+  static async newAntRequest (gamecode, playerID) {
+    // only create a new ant once there's an antFile
+    if (await Game.getAntFileLatestVersion(gamecode, playerID) > 0) {
+      await redis.lpush(newAntQueueKey(gamecode), playerID)
+    }
+  }
+
+  static async emptyNewAntQueue (gamecode) {
+    let antRequest
+    const antRequests = []
+    while ((antRequest = await redis.rpop(newAntQueueKey(gamecode)))) {
+      antRequests.push(antRequest)
+    }
+    return antRequests
+  }
+
   static newAnt (x, y, player, antFileVersion) {
     return {
       x,
@@ -243,26 +260,28 @@ class Game {
 
     for (const nest of mapData.nests) {
       /// resolve nest health
-      /// spawn new ants based on time (and food in future)
       if (nest.health <= 0) gameFinished = true
-      if (nest.health > 0 && newAnts) {
-        // only create a new ant once there's an antFile
-        const antFileVersion = await Game.getAntFileLatestVersion(gamecode, nest.player)
-        if (antFileVersion >= 0) {
-          const spawnPoint = Game.randomFreePointSpawnPoint(mapData, nest)
-          if (spawnPoint) {
-            mapData.ants.push(
-              Game.newAnt(
-                spawnPoint.x,
-                spawnPoint.y,
-                nest.player,
-                antFileVersion
-              )
+    }
+
+    const newAntRequests = await Game.emptyNewAntQueue(gamecode)
+    /// spawn new ants based on requests (and food in future)
+    for (const playerID of newAntRequests) {
+      const nest = mapData.nests.find(nest => nest.player === playerID)
+      if (nest.health > 0) {
+        const spawnPoint = Game.randomFreePointSpawnPoint(mapData, nest)
+        if (spawnPoint) {
+          mapData.ants.push(
+            Game.newAnt(
+              spawnPoint.x,
+              spawnPoint.y,
+              playerID,
+              await Game.getAntFileLatestVersion(gamecode, playerID)
             )
-          }
+          )
         }
       }
     }
+
     console.log(Date.now(), mapData.ants)
     // emit mapdata to game trackers
     Game.setMapData(gamecode, mapData)
