@@ -1,6 +1,7 @@
 const { redis } = require('./../redis')
 const Func = require('./Func')
 const GameData = require('./game_data/GameData')
+const { pointInPolygon } = require('./../utils/Geometry')
 
 const state = ['joining', 'started', 'complete']
 
@@ -200,6 +201,11 @@ class Game {
     }
   }
 
+  static coordOccupied (mapData, posX, posY) {
+    return mapData.nests.some(nest => pointInPolygon(posX, posY, nest.points.map(point => [point.x, point.y]))) ||
+            mapData.ants.some(ant => ant.x === posX && ant.y === posY)
+  }
+
   static translateDirectionToMovement (direction) {
     switch (direction) {
       case 0:
@@ -242,19 +248,19 @@ class Game {
         senses: Array.from({ length: 8 }),
         health: ant.health
       }
-      let antFile
-      try {
-        antFile = await Game.getAntFile(gamecode, ant.player, ant.antFileVersion)
-      } catch (e) {
-        console.error(e)
-      }
+      const antFile = await Game.getAntFile(gamecode, ant.player, ant.antFileVersion)
       const antFunc = new Func(antFile, antObj)
       const actions = await antFunc.run()
       if (actions.move) {
         const movement = Game.translateDirectionToMovement(actions.move)
-        // add movement to position (ideally check if possible)
-        ant.x += movement.x
-        ant.y += movement.y
+        // add movement to position
+        const newPosX = ant.x + movement.x
+        const newPosY = ant.y + movement.y
+        if (!Game.coordOccupied(mapData, newPosX, newPosY)) {
+          ant.x = newPosX
+          ant.y = newPosY
+        }
+        // else report to player
       }
     }
 

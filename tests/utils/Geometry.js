@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-expressions */
 
 // Import the dependencies for testing
 import { expect } from 'chai'
-import { Coord, translateShape } from '../../utils/Geometry'
+import { Coord, translateShape, pointInPolygon } from '../../utils/Geometry'
 
 describe('Coord', () => {
   it('stores x and y values', async () => {
@@ -19,5 +20,23 @@ describe('translateShape', () => {
     const expectedShape = [Coord(1, 5), Coord(2, 5), Coord(2, 6), Coord(1, 6)]
     const result = translateShape(shape, xShift, yShift)
     expect(result).to.eql(expectedShape)
+  })
+})
+
+describe('pointInPolygon', () => {
+  it('returns true when a point is inside a square', async () => {
+    const pointX = 5
+    const pointY = 7
+    const shape = [[0, 0], [0, 10], [10, 10], [10, 0]]
+    const result = pointInPolygon(pointX, pointY, shape)
+    expect(result).to.be.true
+  })
+
+  it('returns false when a point is outside a square', async () => {
+    const pointX = 12
+    const pointY = 7
+    const shape = [[0, 0], [0, 10], [10, 10], [10, 0]]
+    const result = pointInPolygon(pointX, pointY, shape)
+    expect(result).to.be.false
   })
 })
