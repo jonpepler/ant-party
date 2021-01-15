@@ -38,6 +38,12 @@ export default class GameSketch extends Component {
       this.resetFill(p5)
       drawable.draw(p5)
     })
+    p5.push()
+    p5.stroke('pink')
+    mapData.pheromones.forEach(p => {
+      p5.point(p.x, p.y)
+    })
+    p5.pop()
   }
 
   getScale = (p5, returnSizes) => {
@@ -78,6 +84,7 @@ GameSketch.propTypes = {
     ants: PropTypes.array,
     nests: PropTypes.array,
     players: PropTypes.array,
+    pheromones: PropTypes.array,
     targetSize: PropTypes.object
   })
 }

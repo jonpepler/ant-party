@@ -177,9 +177,9 @@ class Game {
 
   static async newAntRequest (gamecode, playerID) {
     // only create a new ant once there's an antFile
-    if (await Game.getAntFileLatestVersion(gamecode, playerID) > 0) {
-      await redis.lpush(newAntQueueKey(gamecode), playerID)
-    }
+    // if (await Game.getAntFileLatestVersion(gamecode, playerID) > 0) {
+    await redis.lpush(newAntQueueKey(gamecode), playerID)
+    // }
   }
 
   static async emptyNewAntQueue (gamecode) {
@@ -201,9 +201,24 @@ class Game {
     }
   }
 
+  // TODO refactor these methods (not very DRY)
   static coordOccupied (mapData, posX, posY) {
     return mapData.nests.some(nest => pointInPolygon(posX, posY, nest.points.map(point => [point.x, point.y]))) ||
             mapData.ants.some(ant => ant.x === posX && ant.y === posY)
+  }
+
+  static getObjAtPoint (mapData, posX, posY) {
+    const nest = mapData.nests.filter(nest => pointInPolygon(posX, posY, nest.points.map(point => [point.x, point.y])))
+    if (nest.length) return { item: 'nest', info: { player: nest.player, health: nest.health } }
+    const ant = mapData.ants.filter(ant => ant.x === posX && ant.y === posY)
+    if (ant.length) return { item: 'ant', info: { player: ant.player, health: ant.health } }
+    return undefined
+  }
+
+  static getPheromones (mapData, posX, posY) {
+    return mapData.pheromones
+      .filter(pheromone => pheromone.x === posX && pheromone.y === posY)
+      .map(pheromone => ({ item: 'pheromone', info: { pheromone: pheromone.tag } }))
   }
 
   static translateDirectionToMovement (direction) {
@@ -245,12 +260,26 @@ class Game {
       /// apply action (if possible) to mapData
       /// release pheromone at location on mapData
       const antObj = {
-        senses: Array.from({ length: 8 }),
+        senses: Array.from({ length: 8 }).map((_, index) => {
+          const sense = []
+          const direction = Game.translateDirectionToMovement(index)
+          const sensePoint = { x: ant.x + direction.x, y: ant.y + direction.y }
+
+          const obj = Game.getObjAtPoint(mapData, sensePoint.x, sensePoint.y)
+          if (obj) sense.push(obj)
+
+          sense.push(...Game.getPheromones(mapData, sensePoint.x, sensePoint.y))
+          return sense
+        }),
         health: ant.health
       }
+      console.log('senses', antObj)
       const antFile = await Game.getAntFile(gamecode, ant.player, ant.antFileVersion)
       const antFunc = new Func(antFile, antObj)
       const actions = await antFunc.run()
+      if (actions.pheromone) {
+        mapData.pheromones.push({ tag: actions.pheromone, x: ant.x, y: ant.y })
+      }
       if (actions.move) {
         const movement = Game.translateDirectionToMovement(actions.move)
         // add movement to position

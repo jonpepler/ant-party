@@ -24,7 +24,8 @@ class GameData {
           }
         }
       ),
-      ants: []
+      ants: [],
+      pheromones: []
     }
   }
 }
