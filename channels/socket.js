@@ -2,7 +2,7 @@ const Player = require('../models/Player')
 const { Game, gameKeys } = require('../models/Game')
 
 module.exports = server => {
-  const io = require('socket.io')(server)
+  const io = require('socket.io')(server, { pingTimeout: 7000, pingInterval: 3000 })
   io.on('connection', socket => {
     const socketFunctions = {
       disconnect: async () => {
