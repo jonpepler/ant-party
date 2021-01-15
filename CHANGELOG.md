@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.8](https://github.com/jonpepler/ant-party/compare/v0.3.7...v0.3.8) (2021-01-15)
+
+
+### Features
+
+* 🎸 Don't move ants onto occupied spaces ([c26a517](https://github.com/jonpepler/ant-party/commit/c26a51716b4ff259f4a7c7dcc6b0626b7e35afc8))
+* 🎸 Support pheromones ([33f2162](https://github.com/jonpepler/ant-party/commit/33f216260da58c626af1b2eb409b81a8548eef8c))
+
+
+### Bug Fixes
+
+* 🐛 Increase server ping frequency to help connection drops ([b740a7b](https://github.com/jonpepler/ant-party/commit/b740a7b6704343bdc144b86f819b1c7902504eaf))
+
 ### [0.3.7](https://github.com/jonpepler/ant-party/compare/v0.3.6...v0.3.7) (2021-01-11)
 
 
