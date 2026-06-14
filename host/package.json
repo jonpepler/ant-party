@@ -1,0 +1,10 @@
+{
+  "name": "ant-party-host",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Phase 2: browser-host side. Compiles and sandboxes untrusted ant code in one worker per player and yields the runAnt callback sim/engine.js consumes.",
+  "type": "module",
+  "scripts": {
+    "test": "node antRunner.test.js"
+  }
+}
