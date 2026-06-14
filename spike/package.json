@@ -1,0 +1,20 @@
+{
+  "name": "ant-party-spike",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Phase 0a spike: prove Trystero + node-datachannel works as a Node WebRTC peer",
+  "type": "module",
+  "scripts": {
+    "peer": "node node-peer.js",
+    "test:datachannel": "node manual-handshake.js",
+    "test:trystero": "node trystero-local-test.js"
+  },
+  "dependencies": {
+    "node-datachannel": "^0.31.0",
+    "trystero": "^0.21.0"
+  },
+  "devDependencies": {
+    "aedes": "^1.0.2",
+    "aedes-server-factory": "^0.2.1"
+  }
+}
