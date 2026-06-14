@@ -7,7 +7,8 @@
   "scripts": {
     "peer": "node node-peer.js",
     "test:datachannel": "node manual-handshake.js",
-    "test:trystero": "node trystero-local-test.js"
+    "test:trystero": "node trystero-local-test.js",
+    "test:sandbox": "node worker-sandbox-test.js"
   },
   "dependencies": {
     "node-datachannel": "^0.31.0",
