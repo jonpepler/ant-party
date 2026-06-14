@@ -1,0 +1,10 @@
+{
+  "name": "ant-party-sim",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Framework-agnostic Ant Party simulation (browser host + Node tests)",
+  "type": "module",
+  "scripts": {
+    "test": "node tick.test.js"
+  }
+}
