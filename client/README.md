@@ -1,68 +1,75 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Ant Party client (browser host)
 
-## Available Scripts
+This is the **authoritative browser host** for Ant Party. There is no game
+server: this page generates a gamecode, joins a WebRTC room as the host peer
+(via [Trystero](https://github.com/dmotz/trystero)), accepts player peers (the
+CLI), runs the simulation itself, and broadcasts map data each tick.
 
-In the project directory, you can run:
+It is a static site built with [Vite](https://vitejs.dev/) (React plugin) and
+deployable to GitHub Pages.
 
-### `yarn start`
+## How it fits together
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- `src/host/trysteroTransport.js` implements the transport interface that
+  `host/hostGame.js` expects, backed by Trystero (native WebRTC).
+- `src/host/browserAntRunner.js` wires `host/antRunner.js` to real module Web
+  Workers running the `host/ant-worker.browser.js` sandbox (one worker per
+  player, isolating untrusted ant code).
+- `src/components/GameSetup.js` is the host page. On mount it generates a
+  gamecode, builds the transport + ant runner, and starts the orchestrator
+  (`createHostGame`). The player list and all map data come from the
+  orchestrator's `onUpdate` snapshot.
+- `src/components/Game.js` + `src/components/p5/GameSketch.js` render the map
+  data the simulation produces. The host runs the tick loop; these just draw.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+The simulation (`../sim`) and orchestrator/runner (`../host`) are imported
+directly as sibling ESM modules. Vite's `server.fs.allow: ['..']` permits the
+out-of-root imports and bundles the module worker as a separate chunk.
 
-### `yarn test`
+## Scripts
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```sh
+npm install
+npm run dev      # Vite dev server (http://localhost:5173)
+npm run build    # static bundle into dist/
+npm run preview  # serve the built dist/ locally
+npm run lint     # eslint --fix
+```
 
-### `yarn build`
+`vite.config.js` sets `base: './'` so the built site works on a GitHub Pages
+project page (served from `/<repo>/`).
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Deploying to GitHub Pages
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+A workflow at `.github/workflows/pages.yml` (repo root) builds `client/` and
+publishes `client/dist` to Pages on push to `main`/`master`. Enable Pages in the
+repo settings with "Source: GitHub Actions".
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To deploy manually:
 
-### `yarn eject`
+```sh
+cd client
+npm ci
+npm run build
+# publish the contents of dist/ to your Pages branch / hosting
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## What still needs in-browser + real-network verification
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+The headless sandbox has no browser and cannot reach WebRTC signalling/relays,
+so the live peer-to-peer round trip could not be exercised here. The build is
+verified; the following need a real browser and network:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `yarn build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+1. **Host page loads** and renders the setup screen with a generated 6-digit
+   gamecode (no console errors; Trystero joins the room).
+2. **A CLI peer connects** on that gamecode: it sends `JOIN`, appears in the
+   player list, and receives `JOIN_RESULT`.
+3. **Ant file upload**: the CLI sends `ANT_FILE`; the host compiles it in a Web
+   Worker and replies `FILE_RESULT` (success or compile error).
+4. **Start + simulation**: clicking Start broadcasts `GAME_START`, the tick loop
+   runs, `MAP_DATA` is broadcast each tick, and **ants render and move** in the
+   p5 canvas.
+5. **Spawn / leave**: `SPAWN` requests add ants; a peer leaving removes its
+   player and tears down its worker.
+6. **GitHub Pages**: confirm assets load over the `./`-relative base on the
+   project-page URL.

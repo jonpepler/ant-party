@@ -2,39 +2,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import GameSketch from './p5/GameSketch'
 
+// The host already runs the simulation loop and feeds fresh mapData down as a
+// prop, so Game is now just a thin wrapper around the renderer.
 export default class Game extends React.Component {
-  constructor (props) {
-    super(props)
-
-    this.setSocketFunctions = this.setSocketFunctions.bind(this)
-    this.reportGameStart = this.reportGameStart.bind(this)
-
-    this.setSocketFunctions()
-    this.reportGameStart()
-  }
-
-  setSocketFunctions = () => {
-    this.props.socket.on('test', data => {
-      console.log('pass', data)
-    })
-  }
-
-  reportGameStart = () => {
-    this.props.socket.emit('gameStart', { gamecode: this.props.gamecode })
-  }
-
   render () {
+    if (!this.props.mapData) return null
     return <GameSketch mapData={this.props.mapData} />
   }
 }
 
 Game.propTypes = {
-  gamecode: PropTypes.number,
-  socket: PropTypes.object,
   mapData: PropTypes.shape({
     ants: PropTypes.array,
     nests: PropTypes.array,
     players: PropTypes.array,
+    pheromones: PropTypes.array,
     targetSize: PropTypes.object
   })
 }

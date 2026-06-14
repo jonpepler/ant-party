@@ -3,20 +3,34 @@
     "react"
   ],
   "extends": [
-    "react-app",
     "standard",
     "standard-jsx",
     "standard-react",
-    "eslint:recommended",
     "plugin:react/recommended"
   ],
   "root": true,
   "env": {
-    "node": true
+    "browser": true,
+    "node": true,
+    "es2021": true
   },
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
-    "parser": "babel-eslint"
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "requireConfigFile": false,
+    "babelOptions": {
+      "presets": ["@babel/preset-react"]
+    },
+    "ecmaFeatures": {
+      "jsx": true
+    }
   },
-  "ignorePatterns": ["build/", "node_modules/"],
+  "settings": {
+    "react": {
+      "version": "16.14.0"
+    }
+  },
+  "ignorePatterns": ["build/", "dist/", "node_modules/"],
   "rules": {}
 }

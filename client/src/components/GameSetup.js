@@ -1,86 +1,65 @@
 import React from 'react'
-import axios from 'axios'
-import io from 'socket.io-client'
 
 import ErrorMessage from './ErrorMessage'
 import Game from './Game'
+import { createHostGame, generateGamecode } from '../../../host/hostGame.js'
+import { createTrysteroTransport } from '../host/trysteroTransport'
+import { createBrowserAntRunner } from '../host/browserAntRunner'
 
+// This page IS the authoritative browser host. On mount it generates a
+// gamecode, joins a WebRTC room as the host peer (via Trystero), and runs the
+// simulation itself. Player peers (the CLI) connect over the gamecode; the
+// player list and all map data come from the orchestrator's onUpdate snapshot.
 export default class GameSetup extends React.Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
 
-    this.setSocketFunctions = this.setSocketFunctions.bind(this)
-    this.connectTracker = this.connectTracker.bind(this)
-    this.getGamecode = this.getGamecode.bind(this)
     this.renderPlayers = this.renderPlayers.bind(this)
     this.renderStartButton = this.renderStartButton.bind(this)
+    this.handleClickStart = this.handleClickStart.bind(this)
 
     this.state = {
       gamecode: 'loading...',
       started: false,
-      players: []
+      finished: false,
+      players: [],
+      mapData: null,
+      error: undefined
     }
 
-    this.getGamecode()
-    this.socket = io()
-    this.setSocketFunctions()
+    this.host = null
   }
 
-  setSocketFunctions () {
-    this.socket.on('joinGameTrackerRoom', data => {
-      if (data.message === 'joined') console.log('socket: tracking game')
-    })
-    this.socket.on('tracker:playerJoined', data => {
-      const { playerID, playerName } = data
-      console.log(`socket player joined: ${playerID}`)
-      this.setState(s => {
-        return {
-          players: s.players.concat({
-            id: playerID,
-            name: playerName
-          })
-        }
+  componentDidMount () {
+    try {
+      const gamecode = generateGamecode()
+      const transport = createTrysteroTransport(gamecode)
+      const antRunner = createBrowserAntRunner()
+      this.host = createHostGame({
+        transport,
+        antRunner,
+        gamecode,
+        onUpdate: snapshot => this.setState({
+          gamecode: snapshot.gamecode,
+          started: snapshot.started,
+          finished: snapshot.finished,
+          players: snapshot.players,
+          mapData: snapshot.mapData
+        })
       })
-    })
-
-    this.socket.on('tracker:playerLeft', data => {
-      const { playerID } = data
-      console.log(`socket player left: ${playerID}`)
-      this.setState(s => {
-        return { players: s.players.filter(player => player.id !== playerID) }
-      })
-    })
-
-    this.socket.on('gameStart', mapData => {
-      console.log('reported!', mapData)
-      this.setState({ started: true, mapData: JSON.parse(mapData) })
-    })
-
-    this.socket.on('mapData', mapData => {
-      console.log('tick', mapData)
-      this.setState({ mapData })
-    })
+      // Show the generated gamecode immediately, before any peer joins.
+      this.setState({ gamecode: this.host.gamecode })
+    } catch (error) {
+      this.setState({ error: error.message })
+    }
   }
 
-  connectTracker () {
-    const { gamecode } = this.state
-    this.socket.emit('joinGameTrackerRoom', { gamecode })
+  componentWillUnmount () {
+    if (this.host) this.host.stop()
   }
 
-  getGamecode () {
-    axios.post('/api/v1/game/create')
-      .then(response => {
-        const { gamecode } = response.data
-        // set gamecode and then use it to connect tracker
-        this.setState({ gamecode }, this.connectTracker)
-      })
-      .catch(error => {
-        this.setState({ error: error.message })
-      })
-  }
-
-  handleClickStart = () => {
-    this.socket.emit('gameStart', { gamecode: this.state.gamecode })
+  handleClickStart () {
+    if (this.host) this.host.start()
   }
 
   renderPlayers () {
@@ -131,12 +110,7 @@ export default class GameSetup extends React.Component {
             </>
           )
           : (
-            <Game
-              gamecode={this.state.gamecode}
-              socket={this.socket}
-              players={this.state.players}
-              mapData={this.state.mapData}
-            />
+            <Game mapData={this.state.mapData} />
           )}
       </>
     )

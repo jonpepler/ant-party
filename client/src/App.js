@@ -3,7 +3,6 @@ import '@csstools/normalize.css'
 import './App.scss'
 
 import GameSetup from './components/GameSetup'
-import APITest from './APITest.js'
 
 function App () {
   const [gameStarted, startGame] = useState(false)
@@ -26,9 +25,7 @@ function App () {
           )}
 
       </main>
-      <footer>
-        <APITest />
-      </footer>
+      <footer />
     </div>
   )
 }
